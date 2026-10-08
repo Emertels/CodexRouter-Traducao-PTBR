@@ -61,7 +61,7 @@ Ao concluir, `S` abre o aplicativo e fecha a janela do CMD; `N`, `Esc` ou `Enter
 
 O executável também pode precisar da alteração reversível do Electron Fuse usada por esta distribuição para aceitar um `app.asar` personalizado. O instalador salva cópias do ASAR e do executável identificadas por hash em `_backup/versions`; ele registra os caminhos usados para que o restaurador repare a mesma versão. Backups existentes não são sobrescritos.
 
-O cartão **Aparência**, logo abaixo do seletor de idioma, mostra o crédito **Tradução PT-BR: Emerson Teles** em azul turquesa.
+O cartão **Aparência**, logo abaixo do seletor de idioma, mostra o crédito **Tradução PT-BR: Emerson Teles** em azul turquesa somente quando **Português (Brasil)** está selecionado.
 
 ## Restaurar
 

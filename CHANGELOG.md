@@ -29,5 +29,5 @@
 - Construtor reproduzível sem dependências npm (`tools/build-translated-asar.cjs`) com recálculo dos hashes SHA-256 e integridade de blocos do ASAR.
 - Manifesto gerado com os hashes do original e da tradução para validar a compatibilidade antes da instalação.
 - Corrigida a ordem de aplicação das traduções estáticas e dinâmicas para preservar os textos de fallback em inglês e compilar a interface atual.
-- Adicionado o crédito **Tradução PT-BR: Emerson Teles** em azul turquesa no cartão **Aparência**, logo abaixo do seletor de idioma.
+- Adicionado o crédito **Tradução PT-BR: Emerson Teles** em azul turquesa no cartão **Aparência**, logo abaixo do seletor de idioma; ele aparece somente quando **Português (Brasil)** está selecionado.
 - Removida a regra obsoleta de `_translation_old`; `_Translation Old` não é criada nem usada. Os scripts guardam os originais versionados em `_backup/versions`, no diretório padrão do aplicativo, e restauram a cópia validada correspondente.

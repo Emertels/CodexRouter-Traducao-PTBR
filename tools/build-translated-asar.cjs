@@ -367,7 +367,7 @@ function addAppearanceTranslatorCredit(source) {
   }
 
   source = source.replace(settingsListOpen, settingsListOpenWithArray);
-  const languageSelectWithCredit = 'children:Gi.map(e=>(0,H.jsx)(`option`,{value:e.id,children:e.label},e.id))})]})' + ',' + credit + ']})';
+  const languageSelectWithCredit = 'children:Gi.map(e=>(0,H.jsx)(`option`,{value:e.id,children:e.label},e.id))})]})' + ',l===`pt-BR`?' + credit + ':null]})';
   source = source.replace(languageSelectEnd, languageSelectWithCredit);
   return { source, count: 1 };
 }
