@@ -12,8 +12,9 @@
 ### Consistência do Instalador e Restaurador
 - Unificado o prompt final de instalação e restauração: `S` abre o aplicativo e encerra o console; `N`, `Esc` ou `Enter` encerram sem abrir.
 - A opção de restauração quando o app já está em inglês exibe a mensagem de que nada precisa ser restaurado e oferece o mesmo prompt.
-- Os arquivos `.bat` configuram UTF-8 nativo e chamam o helper PowerShell com encerramento explícito após a escolha.
-- Adicionado BOM UTF-8 ao helper para preservar acentos e cedilhas no Windows PowerShell 5.1.
+- Os arquivos `.bat` selecionam a página de código UTF-8 antes de abrir o PowerShell e fecham corretamente após a escolha.
+- Adicionado BOM UTF-8 aos scripts PowerShell para que o Windows PowerShell 5.1 leia acentos e cedilhas corretamente desde o início.
+- Corrigida a exibição de acentos e cedilha no CMD do instalador e do restaurador.
 - O aplicativo é iniciado com a pasta de instalação como diretório de trabalho.
 
 ### Correções de Execução e Processos

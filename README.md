@@ -57,7 +57,7 @@ Requisitos: Windows, PowerShell e Node.js 18 ou superior. O construtor não usa 
 2. O instalador compara a versão instalada com o manifesto e gera um pacote compatível automaticamente quando o bundle ainda corresponde às traduções disponíveis.
 3. Antes de substituir arquivos, fecha à força os processos do executável da instalação selecionada e valida backups específicos por versão. Uma versão sem suporte é interrompida sem substituir o ASAR instalado.
 
-Ao concluir, `S` abre o aplicativo e fecha a janela do CMD; `N`, `Esc` ou `Enter` fecham sem abrir. A restauração oferece as mesmas opções, inclusive quando o app já está em inglês e nenhum arquivo precisa ser restaurado.
+Ao concluir, `S` abre o aplicativo e fecha a janela do CMD; `N`, `Esc` ou `Enter` fecham sem abrir. A restauração oferece as mesmas opções, inclusive quando o app já está em inglês e nenhum arquivo precisa ser restaurado. Os arquivos PowerShell usam BOM UTF-8 e os `.bat` selecionam a página de código UTF-8 para exibir corretamente acentos e cedilhas no Windows.
 
 O executável também pode precisar da alteração reversível do Electron Fuse usada por esta distribuição para aceitar um `app.asar` personalizado. O instalador salva cópias do ASAR e do executável identificadas por hash em `_backup/versions`; ele registra os caminhos usados para que o restaurador repare a mesma versão. Backups existentes não são sobrescritos.
 
