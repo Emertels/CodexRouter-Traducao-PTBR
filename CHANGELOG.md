@@ -3,7 +3,7 @@
 ## [1.0.0] - 2026-10-07
 
 ### Lançamento Oficial da Tradução PT-BR
-- Localização profunda cobrindo **848 entradas PT-BR**: 139 chaves do catálogo, 692 textos diretos de telas e 17 valores dinâmicos da interface (provedores, modelos, uso, erros, datas, horários e descrições).
+- Localização cobrindo **868 ajustes PT-BR**: 139 chaves do catálogo, 697 textos diretos, 31 valores dinâmicos da interface e o crédito visual do tradutor.
 - Traduzidos os avisos de login de contas, descrições de provedores, opções de nível de raciocínio, contadores de solicitações e informações de tráfego/limites.
 - Datas, horas, separadores numéricos e unidades compactas agora acompanham o idioma selecionado na interface, incluindo o formato pt-BR.
 - Adicionada a opção Português (Brasil) ao seletor de idioma e detecção automática da localidade do sistema na primeira inicialização.
@@ -27,3 +27,6 @@
 - Suporte à alteração segura e reversível do Electron Fuse para aceitar o pacote traduzido.
 - Construtor reproduzível sem dependências npm (`tools/build-translated-asar.cjs`) com recálculo dos hashes SHA-256 e integridade de blocos do ASAR.
 - Manifesto gerado com os hashes do original e da tradução para validar a compatibilidade antes da instalação.
+- Corrigida a ordem de aplicação das traduções estáticas e dinâmicas para preservar os textos de fallback em inglês e compilar a interface atual.
+- Adicionado o crédito **Tradução PT-BR: Emerson Teles** em azul turquesa no cartão **Aparência**, logo abaixo do seletor de idioma.
+- Removida a regra obsoleta de `_translation_old`; `_Translation Old` não é criada nem usada. Os scripts guardam os originais versionados em `_backup/versions`, no diretório padrão do aplicativo, e restauram a cópia validada correspondente.

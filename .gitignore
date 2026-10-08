@@ -10,7 +10,6 @@
 
 # Local backups and runtime files
 /_backup/
-/_translation_old/
 *.log
 *.tmp
 *.bak

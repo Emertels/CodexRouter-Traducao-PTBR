@@ -226,11 +226,17 @@ function findObjectRange(source, marker, fromIndex = 0) {
   return { start: openIndex, end: matchingBrace(source, openIndex) };
 }
 
-function replaceInlineLiterals(source, translations) {
+function replaceInlineLiterals(source, translations, handledSources = new Set()) {
   const catalogMarker = source.includes(',Oi={') ? ',Oi={' : 'Ki={';
   const localeMarker = source.includes('ki={') ? 'ki={' : 'qi={';
-  const protectedRanges = [findObjectRange(source, catalogMarker), findObjectRange(source, localeMarker)]
-    .sort((a, b) => a.start - b.start);
+  const protectedRanges = [findObjectRange(source, catalogMarker), findObjectRange(source, localeMarker)];
+  const dynamicHelperStart = source.indexOf('function codexRouterPtText(');
+  if (dynamicHelperStart >= 0) {
+    const dynamicHelperEnd = source.indexOf('function U({children:e,tone:t=`neutral`})', dynamicHelperStart);
+    if (dynamicHelperEnd < 0) fail('Bloco de traduções dinâmicas mudou.');
+    protectedRanges.push({ start: dynamicHelperStart, end: dynamicHelperEnd });
+  }
+  protectedRanges.sort((a, b) => a.start - b.start);
   const candidates = [];
   for (const translation of translations) {
     let index = source.indexOf(translation.source);
@@ -264,7 +270,7 @@ function replaceInlineLiterals(source, translations) {
     found.add(candidate.source);
   }
 
-  const missing = translations.map(item => item.source).filter(value => !found.has(value));
+  const missing = translations.map(item => item.source).filter(value => !found.has(value) && !handledSources.has(value));
   if (missing.length) fail(`Literais de interface não localizados fora dos catálogos: ${missing.join(' | ')}`);
   replacements.sort((a, b) => b.index - a.index);
   let result = source;
@@ -288,11 +294,10 @@ function localizeDynamicUiMessages(source) {
     ['children:l?.planNote||Hi(e,t?.account?.status,t?.account?.message,r===`darwin`)', 'children:codexRouterPtText(l?.planNote||Hi(e,t?.account?.status,t?.account?.message,r===`darwin`))'],
     ['n?.status===`failed`?(0,H.jsx)(`small`,{children:n.error}):null', 'n?.status===`failed`?(0,H.jsx)(`small`,{children:codexRouterPtText(n.error)}):null'],
     ['(0,H.jsx)(`strong`,{children:e.displayName}),(0,H.jsx)(`small`,{children:Vi(e)})', '(0,H.jsx)(`strong`,{children:codexRouterPtText(e.displayName)}),(0,H.jsx)(`small`,{children:codexRouterPtText(Vi(e))})'],
-    [',t.requests===1?`request`:`requests`,` até agora`', ',codexRouterPtPlural(t.requests,`request`),` até agora`'],
+    [',t.requests===1?`request`:`requests`,` so far`', ',codexRouterPtPlural(t.requests,`request`),` até agora`'],
     ['children:Ii(r)', 'children:codexRouterPtText(Ii(r))'],
     ['children:Ii(e)', 'children:codexRouterPtText(Ii(e))'],
-    ['children:e.accuracy||`untested`', 'children:codexRouterPtText(e.accuracy||`untested`)'],
-    ['children:e.note||`Local model for pasted-image transcription.`', 'children:codexRouterPtText(e.note||`Local model for pasted-image transcription.`)'],
+    ['e.accuracy||`untested`', 'codexRouterPtText(e.accuracy||`untested`)'],
     ['N.map(e=>(0,H.jsx)(`option`,{value:e,children:e},e))', 'N.map(e=>(0,H.jsx)(`option`,{value:e,children:codexRouterPtText(e)},e))'],
     ['children:[ue.length,` famil`,ue.length===1?`y`:`ies`,` · `,qr(ue),` `,p.trim()?`matches`:`tags`]', 'children:[ue.length,` `,ue.length===1?`família`:`famílias`,` · `,qr(ue),` `,p.trim()?`correspondências`:`etiquetas`]'],
     ['children:[e.models.length,` tags · `,Jr(e.models)]', 'children:[e.models.length,` etiquetas · `,Jr(e.models)]'],
@@ -343,6 +348,28 @@ function localizeNumberDateFormatting(source) {
   const decimalAfter = 'function et(e,t){return new Intl.NumberFormat(document.documentElement.lang||navigator.language||`en-US`,{minimumFractionDigits:0,maximumFractionDigits:t}).format(e)}';
   if (!source.includes(decimalBefore)) fail('Formatador de decimais compactos não encontrado.');
   return source.replace(decimalBefore, decimalAfter);
+}
+
+function addAppearanceTranslatorCredit(source) {
+  const marker = 'data-ptbr-translator-credit';
+  if (source.includes(marker)) return { source, count: 0 };
+
+  const settingsListOpen = '(0,H.jsx)(`div`,{className:`settings-list`,children:(0,H.jsxs)(`div`,{className:`setting-row`,children:[';
+  const settingsListOpenWithArray = '(0,H.jsxs)(`div`,{className:`settings-list`,children:[(0,H.jsxs)(`div`,{className:`setting-row`,children:[';
+  const languageSelectEnd = 'children:Gi.map(e=>(0,H.jsx)(`option`,{value:e.id,children:e.label},e.id))})]})})';
+  const credit = '(0,H.jsx)(`small`,{"data-ptbr-translator-credit":`true`,style:{display:`block`,color:`#00adb5`,fontSize:`12px`,lineHeight:1.4,marginTop:`12px`},children:`Tradução PT-BR: Emerson Teles`})';
+
+  if (source.split(settingsListOpen).length - 1 !== 1) {
+    fail('Cartão Aparência/Idioma não localizado de forma única; crédito não inserido.');
+  }
+  if (source.split(languageSelectEnd).length - 1 !== 1) {
+    fail('Seletor de idioma do cartão Aparência não localizado de forma única; crédito não inserido.');
+  }
+
+  source = source.replace(settingsListOpen, settingsListOpenWithArray);
+  const languageSelectWithCredit = 'children:Gi.map(e=>(0,H.jsx)(`option`,{value:e.id,children:e.label},e.id))})]})' + ',' + credit + ']})';
+  source = source.replace(languageSelectEnd, languageSelectWithCredit);
+  return { source, count: 1 };
 }
 
 function updateEntryIntegrity(entry, content) {
@@ -398,9 +425,18 @@ function main() {
     bundle = replaceDefaultCatalog(bundle, translations);
     bundle = addPtBrCatalogEntries(bundle, translations);
   }
-  bundle = replaceInlineLiterals(bundle, inlineTranslations);
   const dynamicUi = localizeDynamicUiMessages(bundle);
   bundle = dynamicUi.source;
+  const dynamicHandledInlineSources = new Set([
+    'Reading the retained router ledger',
+    'Recent event telemetry; retained daily totals are unavailable',
+    'Token history appears after the router reports usage',
+    'so far',
+    'tags ·'
+  ]);
+  bundle = replaceInlineLiterals(bundle, inlineTranslations, dynamicHandledInlineSources);
+  const appearanceCredit = addAppearanceTranslatorCredit(bundle);
+  bundle = appearanceCredit.source;
   bundle = localizeNumberDateFormatting(bundle);
   verifyJavaScriptSyntax(bundle, outputPath);
   const translatedBundle = Buffer.from(bundle, 'utf8');
@@ -422,7 +458,7 @@ function main() {
     sourceSha256: crypto.createHash('sha256').update(archive.data).digest('hex'),
     translatedSha256: crypto.createHash('sha256').update(output).digest('hex'),
     bundlePath: bundleFile.path,
-    translationCount: Object.keys(translations).length + inlineTranslations.length + dynamicUi.count
+    translationCount: Object.keys(translations).length + inlineTranslations.length + dynamicUi.count + appearanceCredit.count
   };
   fs.mkdirSync(path.dirname(outputPath), { recursive: true });
   fs.writeFileSync(tempPath, output);
@@ -444,7 +480,7 @@ function main() {
 
   console.log(`Pacote traduzido gerado: ${outputPath}`);
   console.log(`Manifesto de versão gerado: ${manifestPath}`);
-  console.log(`Entradas PT-BR aplicadas: ${Object.keys(translations).length + inlineTranslations.length + dynamicUi.count} (${Object.keys(translations).length} no catálogo, ${inlineTranslations.length} textos diretos e ${dynamicUi.count} valores dinâmicos)`);
+  console.log(`Entradas PT-BR aplicadas: ${Object.keys(translations).length + inlineTranslations.length + dynamicUi.count + appearanceCredit.count} (${Object.keys(translations).length} no catálogo, ${inlineTranslations.length} textos diretos, ${dynamicUi.count} valores dinâmicos e ${appearanceCredit.count} crédito visual)`);
   console.log(`Tamanho original: ${archive.data.length} bytes; novo tamanho: ${output.length} bytes`);
 }
 

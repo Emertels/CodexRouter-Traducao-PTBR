@@ -28,9 +28,9 @@ Scripts e catálogo para gerar e instalar uma versão PT-BR do Codex Router Cont
 
 ## O que foi traduzido
 
-A varredura da versão instalada mais recente aplica **848 entradas PT-BR**: 139 entradas do catálogo e 692 textos diretos de telas, estados, configurações, provedores, modelos, uso, erros, datas, horários e descrições. Formatos de números e datas acompanham o idioma selecionado. O seletor inclui Português (Brasil), e uma instalação configurada em português seleciona esse idioma na primeira inicialização. Nomes próprios e termos técnicos permanecem inalterados quando fazem parte da interface.
+A varredura da versão instalada mais recente aplica **868 ajustes PT-BR**: 139 entradas do catálogo, 697 textos diretos, 31 valores dinâmicos e o crédito visual do tradutor. As traduções cobrem telas, estados, configurações, provedores, modelos, uso, erros, datas, horários e descrições. Formatos de números e datas acompanham o idioma selecionado. O seletor inclui Português (Brasil), e uma instalação configurada em português seleciona esse idioma na primeira inicialização. Nomes próprios e termos técnicos permanecem inalterados quando fazem parte da interface.
 
-As traduções ficam em `translations/pt-BR.json` e nos arquivos `translations/inline-pt-BR*.json`. O construtor reconhece as estruturas de bundle usadas pelas versões anteriores e atuais, mantém o catálogo em inglês separado, recalcula os hashes SHA-256 dos arquivos ASAR e valida o pacote antes de gravá-lo. O manifesto registra os hashes do original e da tradução.
+As traduções ficam em `translations/pt-BR.json` e nos arquivos `translations/inline-pt-BR*.json`. Essa pasta é a fonte necessária para gerar o pacote; não é uma pasta de backup. O instalador cria e mantém os backups originais em `_backup/versions`, dentro da pasta padrão do aplicativo, sem depender de `_Translation Old` nem sobrescrever cópias anteriores. O restaurador valida os hashes registrados e recupera a cópia original correspondente. O construtor reconhece as estruturas de bundle usadas pelas versões anteriores e atuais, mantém o catálogo em inglês separado, recalcula os hashes SHA-256 dos arquivos ASAR e valida o pacote antes de gravá-lo. O manifesto registra os hashes do original e da tradução.
 
 ## Gerar o pacote
 
@@ -60,6 +60,8 @@ Requisitos: Windows, PowerShell e Node.js 18 ou superior. O construtor não usa 
 Ao concluir, `S` abre o aplicativo e fecha a janela do CMD; `N`, `Esc` ou `Enter` fecham sem abrir. A restauração oferece as mesmas opções, inclusive quando o app já está em inglês e nenhum arquivo precisa ser restaurado.
 
 O executável também pode precisar da alteração reversível do Electron Fuse usada por esta distribuição para aceitar um `app.asar` personalizado. O instalador salva cópias do ASAR e do executável identificadas por hash em `_backup/versions`; ele registra os caminhos usados para que o restaurador repare a mesma versão. Backups existentes não são sobrescritos.
+
+O cartão **Aparência**, logo abaixo do seletor de idioma, mostra o crédito **Tradução PT-BR: Emerson Teles** em azul turquesa.
 
 ## Restaurar
 
