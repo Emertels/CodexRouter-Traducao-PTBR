@@ -4,6 +4,18 @@
 
 Scripts e catálogo para gerar e instalar uma versão PT-BR do Codex Router Control Center no Windows. O repositório não inclui o aplicativo original; você gera o pacote traduzido a partir do `app.asar` da sua própria instalação.
 
+---
+
+## 🎥 Vídeo Tutorial & Demonstração
+
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=mP77ubkrk2k" target="_blank">
+    <img src="https://img.youtube.com/vi/mP77ubkrk2k/maxresdefault.jpg" alt="Vídeo Tutorial da Tradução Codex Router no YouTube" width="95%">
+  </a>
+</p>
+
+---
+
 ## O que foi traduzido
 
 A varredura da versão instalada mais recente aplica **848 entradas PT-BR**: 139 entradas do catálogo e 692 textos diretos de telas, estados, configurações, provedores, modelos, uso, erros, datas, horários e descrições. Formatos de números e datas acompanham o idioma selecionado. O seletor inclui Português (Brasil), e uma instalação configurada em português seleciona esse idioma na primeira inicialização. Nomes próprios e termos técnicos permanecem inalterados quando fazem parte da interface.
