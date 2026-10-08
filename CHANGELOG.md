@@ -1,19 +1,13 @@
 # Histórico de alterações
 
-## [1.3.0] - 2026-10-07
+## [1.0.0] - 2026-10-07
 
-### Inicialização do aplicativo
-- Instalador e restaurador agora delegam a abertura do Codex Router ao Explorer e aguardam 400 ms antes de encerrar o PowerShell, seguindo o fluxo já usado pelo pacote Antigravity PT-BR.
-- Aplicada a mesma inicialização nos caminhos de instalação, restauração e no caso em que o aplicativo já está em inglês.
-- Mantidos os códigos de saída explícitos dos inicializadores CMD e os títulos de janela com a versão 1.3.0.
-
-## [1.2.4] - 2026-10-07
-
-### Consistência do instalador e restaurador
-- Unificado o prompt final de instalação e restauração: `S` abre o aplicativo e encerra o CMD; `N`, `Esc` ou `Enter` encerram sem abrir.
-- A opção de restauração quando o app já está em inglês agora exibe a mensagem de que nada precisa ser restaurado e oferece o mesmo prompt.
-- Os dois `.bat` usam a mesma configuração UTF-8 e chamam o mesmo helper PowerShell, com encerramento explícito após a escolha.
-- Adicionado BOM UTF-8 ao helper para preservar acentos no Windows PowerShell 5.1.
+### Lançamento Oficial da Tradução PT-BR
+- Localização profunda cobrindo 848 entradas PT-BR (139 chaves do catálogo, 692 textos diretos de telas e 17 dinâmicos de status, uso, provedores e modelos).
+- Instalador automático (`Instalar-Traducao.bat`) e restaurador seguro (`Restaurar-Original.bat`) com prompt unificado de inicialização: `S` abre o app e encerra o console; `N`, `Esc` ou `Enter` encerram sem abrir.
+- Formatos de datas, horas, números e unidades adaptados para o padrão brasileiro (`pt-BR`).
+- Validação estrita de integridade SHA-256 no ASAR e backups imutáveis versionados em `_backup/versions`.
+- Compatibilidade nativa com Electron Fuse de forma totalmente reversível.
 
 ## [1.2.3] - 2026-10-07
 

@@ -1,10 +1,6 @@
 # Codex Router Control Center — PT-BR
 
-![Versão](https://img.shields.io/badge/vers%C3%A3o-1.3.0-blue?style=for-the-badge)
-![Idioma](https://img.shields.io/badge/idioma-Portugu%C3%AAs%20(Brasil)-green?style=for-the-badge)
-![Licença](https://img.shields.io/badge/licen%C3%A7a-MIT-purple?style=for-the-badge)
-
-[English](README_EN.md)
+![Idioma](https://img.shields.io/badge/Idioma-Português%20(Brasil)-green?style=for-the-badge)
 
 Scripts e catálogo para gerar e instalar uma versão PT-BR do Codex Router Control Center no Windows. O repositório não inclui o aplicativo original; você gera o pacote traduzido a partir do `app.asar` da sua própria instalação.
 

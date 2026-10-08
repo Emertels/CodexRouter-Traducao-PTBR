@@ -1,6 +1,6 @@
 {
   "name": "codex-router-ptbr",
-  "version": "1.3.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Build scripts and PT-BR translations for Codex Router Control Center",
   "license": "MIT",

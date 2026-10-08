@@ -1,4 +1,4 @@
-﻿# ==============================================================================
+# ==============================================================================
 #  Instalador Universal de Tradução PT-BR para Codex Router Control Center
 #  Tradução e Personalização por: Emerson Teles
 # ==============================================================================
@@ -6,7 +6,7 @@ $consoleUtf8 = New-Object System.Text.UTF8Encoding($false)
 [Console]::InputEncoding = $consoleUtf8
 [Console]::OutputEncoding = $consoleUtf8
 $OutputEncoding = $consoleUtf8
-$Host.UI.RawUI.WindowTitle = "Instalador Codex Router PT-BR v1.3.0 - Emerson Teles"
+$Host.UI.RawUI.WindowTitle = "Instalador Codex Router PT-BR v1.0.0 - Emerson Teles"
 $launchChoiceHelper = Join-Path $PSScriptRoot "tools\launch-choice.ps1"
 if (-not (Test-Path -LiteralPath $launchChoiceHelper -PathType Leaf)) {
     throw "O helper para abrir o Codex Router não foi encontrado: $launchChoiceHelper"

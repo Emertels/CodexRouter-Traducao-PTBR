@@ -1,5 +1,5 @@
 CODEX ROUTER CONTROL CENTER — TRADUÇÃO PT-BR
-Versão 1.2.3
+Versão 1.0.0
 
 Este projeto contém o catálogo PT-BR e os scripts para criar e instalar uma versão localizada do Codex Router Control Center no Windows.
 
