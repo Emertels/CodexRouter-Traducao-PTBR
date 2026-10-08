@@ -16,6 +16,16 @@ Scripts e catálogo para gerar e instalar uma versão PT-BR do Codex Router Cont
 
 ---
 
+## 📸 Demonstração Visual
+
+<p align="center">
+  <img src="assets/codex_router_painel_ptbr.png" alt="Painel Geral e Dashboard do Codex Router em Português" width="95%">
+  <br>
+  <em>Painel de Controle, métricas em tempo real, tráfego e telemetria 100% em Português do Brasil</em>
+</p>
+
+---
+
 ## O que foi traduzido
 
 A varredura da versão instalada mais recente aplica **848 entradas PT-BR**: 139 entradas do catálogo e 692 textos diretos de telas, estados, configurações, provedores, modelos, uso, erros, datas, horários e descrições. Formatos de números e datas acompanham o idioma selecionado. O seletor inclui Português (Brasil), e uma instalação configurada em português seleciona esse idioma na primeira inicialização. Nomes próprios e termos técnicos permanecem inalterados quando fazem parte da interface.
