@@ -1,0 +1,22 @@
+# Original and generated application packages (retrieve/build locally)
+/app.asar
+/app-pt.asar
+/app-pt*.asar
+/app-pt.asar.tmp
+/app-pt.asar.manifest.json
+/app-pt*.asar.manifest.json
+/app-pt.asar.manifest.json.tmp
+*.asar.tmp
+
+# Local backups and runtime files
+/_backup/
+/_translation_old/
+*.log
+*.tmp
+*.bak
+Thumbs.db
+Desktop.ini
+.DS_Store
+.vscode/
+.idea/
+node_modules/

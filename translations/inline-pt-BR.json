@@ -1,0 +1,238 @@
+[
+  {
+    "source": "A request has entered the router and is waiting for route metadata.",
+    "target": "Uma solicitação entrou no roteador e aguarda os metadados da rota."
+  },
+  {
+    "source": "Account usage is unavailable. Sign in again if the session expired.",
+    "target": "O uso da conta está indisponível. Entre novamente se a sessão tiver expirado."
+  },
+  {
+    "source": "Account-reported usage",
+    "target": "Uso informado pela conta"
+  },
+  {
+    "source": "Add models from a connected provider to fill this list.",
+    "target": "Adicione modelos de um provedor conectado para preencher esta lista."
+  },
+  {
+    "source": "all fit this machine",
+    "target": "todos compatíveis com este computador"
+  },
+  {
+    "source": "Allow a model larger than the router recommends for this machine",
+    "target": "Permitir um modelo maior do que o recomendado pelo roteador para este computador"
+  },
+  {
+    "source": "ChatGPT has not reported token usage for these dates.",
+    "target": "O ChatGPT não informou o uso de tokens nestas datas."
+  },
+  {
+    "source": "Connect a provider",
+    "target": "Conectar um provedor"
+  },
+  {
+    "source": "Connect a vision provider or download a local image reader.",
+    "target": "Conecte um provedor com visão ou baixe um leitor de imagens local."
+  },
+  {
+    "source": "Credential ready. You can take it away from your clients without disconnecting the account.",
+    "target": "Credencial pronta. Você pode removê-la dos clientes sem desconectar a conta."
+  },
+  {
+    "source": "Fits this machine",
+    "target": "Compatível com este computador"
+  },
+  {
+    "source": "Free provider route",
+    "target": "Rota por provedor gratuito"
+  },
+  {
+    "source": "Input and output details were not reported for this day.",
+    "target": "Os detalhes de entrada e saída não foram informados para este dia."
+  },
+  {
+    "source": "Input/cache split is not reported by every provider yet.",
+    "target": "Nem todos os provedores informam a divisão entre entrada e cache."
+  },
+  {
+    "source": "Install and add to Codex",
+    "target": "Instalar e adicionar ao Codex"
+  },
+  {
+    "source": "Loading content",
+    "target": "Carregando conteúdo"
+  },
+  {
+    "source": "Loading into MLX",
+    "target": "Carregando no MLX"
+  },
+  {
+    "source": "Loading provider catalog",
+    "target": "Carregando catálogo de provedores"
+  },
+  {
+    "source": "Local model",
+    "target": "Modelo local"
+  },
+  {
+    "source": "Local model for pasted-image transcription.",
+    "target": "Modelo local para transcrever texto de imagens coladas."
+  },
+  {
+    "source": "Local router totals and account-reported history are shown separately.",
+    "target": "Os totais do roteador local e o histórico informado pela conta são exibidos separadamente."
+  },
+  {
+    "source": "Model id",
+    "target": "ID do modelo"
+  },
+  {
+    "source": "Model not indexed",
+    "target": "Modelo não indexado"
+  },
+  {
+    "source": "Model provider",
+    "target": "Provedor do modelo"
+  },
+  {
+    "source": "Model tag or Ollama URL",
+    "target": "Identificador do modelo ou URL do Ollama"
+  },
+  {
+    "source": "Needs a provider",
+    "target": "Requer um provedor"
+  },
+  {
+    "source": "No model traffic available",
+    "target": "Nenhum tráfego de modelos disponível"
+  },
+  {
+    "source": "No provider or event reports a rolling 24-hour window",
+    "target": "Nenhum provedor ou evento informa uma janela móvel de 24 horas"
+  },
+  {
+    "source": "No token usage reported",
+    "target": "Nenhum uso de tokens informado"
+  },
+  {
+    "source": "Open the provider CLI in your own terminal on Windows or Linux.",
+    "target": "Abra a interface de linha de comando do provedor no seu terminal, no Windows ou Linux."
+  },
+  {
+    "source": "Provider API route",
+    "target": "Rota pela API do provedor"
+  },
+  {
+    "source": "Provider catalog could not be loaded.",
+    "target": "Não foi possível carregar o catálogo de provedores."
+  },
+  {
+    "source": "Provider catalog models",
+    "target": "Modelos do catálogo de provedores"
+  },
+  {
+    "source": "Provider connections",
+    "target": "Conexões de provedores"
+  },
+  {
+    "source": "Provider routes",
+    "target": "Rotas dos provedores"
+  },
+  {
+    "source": "Provider usage unavailable",
+    "target": "Uso do provedor indisponível"
+  },
+  {
+    "source": "Providers you can connect",
+    "target": "Provedores que você pode conectar"
+  },
+  {
+    "source": "Router service health",
+    "target": "Integridade do serviço do roteador"
+  },
+  {
+    "source": "Router traffic for the last 24 hours: not measured.",
+    "target": "Tráfego do roteador nas últimas 24 horas: sem medição."
+  },
+  {
+    "source": "Run the official provider sign-in command in your own terminal, then refresh this page.",
+    "target": "Execute o comando oficial de login do provedor no seu terminal e atualize esta página."
+  },
+  {
+    "source": "Sign in through the official provider CLI in your system terminal, then refresh.",
+    "target": "Entre pela interface de linha de comando oficial do provedor no terminal do sistema e atualize esta página."
+  },
+  {
+    "source": "Start Qwen MLX installation",
+    "target": "Iniciar instalação do Qwen MLX"
+  },
+  {
+    "source": "Start router service",
+    "target": "Iniciar serviço do roteador"
+  },
+  {
+    "source": "The official CLI will be installed, then sign-in will open in your system terminal.",
+    "target": "A interface de linha de comando oficial será instalada e a tela de login será aberta no terminal do sistema."
+  },
+  {
+    "source": "The router operation did not finish.",
+    "target": "A operação do roteador não foi concluída."
+  },
+  {
+    "source": "This deletes the model weights from this machine.",
+    "target": "Isso exclui os arquivos dos modelos deste computador."
+  },
+  {
+    "source": "This router total",
+    "target": "Total deste roteador"
+  },
+  {
+    "source": "Try a model name, slug, or provider.",
+    "target": "Pesquise pelo nome ou identificador de um modelo ou pelo provedor."
+  },
+  {
+    "source": "Unknown model",
+    "target": "Modelo desconhecido"
+  },
+  {
+    "source": "Update local runtime",
+    "target": "Atualizar ambiente local"
+  },
+  {
+    "source": "Update Ollama",
+    "target": "Atualizar o Ollama"
+  },
+  {
+    "source": "Usage date range",
+    "target": "Período de uso"
+  },
+  {
+    "source": "Usage limit",
+    "target": "Limite de uso"
+  },
+  {
+    "source": "Usage overview",
+    "target": "Visão geral do uso"
+  },
+  {
+    "source": "Uses the signed-in ChatGPT session available to this Codex installation.",
+    "target": "Usa a sessão do ChatGPT conectada a esta instalação do Codex."
+  },
+  {
+    "source": "Verifying model",
+    "target": "Verificando o modelo"
+  },
+  {
+    "source": "Waiting for a cache window",
+    "target": "Aguardando uma janela de cache"
+  },
+  {
+    "source": "Waiting for setup",
+    "target": "Aguardando a configuração"
+  },
+  {
+    "source": "Codex terminal model",
+    "target": "Modelo do terminal do Codex"
+  }
+]

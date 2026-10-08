@@ -1,0 +1,26 @@
+CODEX ROUTER CONTROL CENTER — TRADUÇÃO PT-BR
+Versão 1.2.3
+
+Este projeto contém o catálogo PT-BR e os scripts para criar e instalar uma versão localizada do Codex Router Control Center no Windows.
+
+GERAR O PACOTE
+1. Feche o Codex Router.
+2. Copie o arquivo original resources\app.asar da instalação para esta pasta com o nome app.asar.
+3. Execute: npm run build
+   Ou: node tools\build-translated-asar.cjs app.asar app-pt.asar
+
+O construtor não usa dependências npm. Ele valida cabeçalhos, offsets e hashes SHA-256 do ASAR, aplica as traduções dos arquivos em translations\ e cria app-pt.asar com um manifesto de versão.
+
+INSTALAR
+1. Feche o Codex Router normalmente.
+2. Execute Instalar-Traducao.bat.
+3. O instalador reconstrói automaticamente o pacote para a versão instalada quando os textos ainda são compatíveis, fecha à força os processos dessa instalação e guarda backups por hash sem sobrescrever versões anteriores.
+
+RESTAURAR
+Execute Restaurar-Original.bat. O restaurador fecha os processos do aplicativo e restaura o backup correspondente. Se o ASAR já estiver sem as traduções PT-BR reconhecidas, não altera os arquivos.
+
+SEGURANÇA
+Não compartilhe app.asar, app-pt.asar, executáveis, backups ou dados pessoais no Git. Esses arquivos são ignorados pelo .gitignore e devem ser obtidos/gerados para a versão instalada.
+
+Tradução e manutenção: Emerson Teles
+Licença dos scripts: MIT
