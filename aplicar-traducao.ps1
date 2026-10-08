@@ -326,7 +326,7 @@ if ($targetHasPtBr -and (Test-Path -LiteralPath $statePath -PathType Leaf)) {
     try {
         $savedState = Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json
         $candidate = Join-Path $routerDir $savedState.backupAsar
-        if ($manifest -and $manifest.schemaVersion -eq 1 -and
+        if ($manifest -and $manifest.schemaVersion -eq 1 -and $manifest.builderRevision -eq 2 -and
             $manifest.translatedSha256 -eq $targetHash -and $manifest.sourceSha256 -eq $savedState.sourceSha256 -and
             $savedState.schemaVersion -eq 1 -and $savedState.installedSha256 -eq $targetHash -and
             (Test-AsarFile -Path $candidate) -and (Get-FileSha256 $candidate) -eq $savedState.sourceSha256) {
@@ -336,7 +336,7 @@ if ($targetHasPtBr -and (Test-Path -LiteralPath $statePath -PathType Leaf)) {
         }
     } catch { $savedState = $null }
 }
-if ($manifest -and $manifest.schemaVersion -eq 1 -and $manifest.translatedSha256 -eq $targetHash -and $targetHasPtBr) {
+if ($manifest -and $manifest.schemaVersion -eq 1 -and $manifest.builderRevision -eq 2 -and $manifest.translatedSha256 -eq $targetHash -and $targetHasPtBr) {
     $matchingBackup = $null
     if (Test-Path -LiteralPath $statePath -PathType Leaf) {
         try {
@@ -381,7 +381,7 @@ if ($targetHasPtBr) {
     }
 }
 
-$needsBuild = (-not $manifest) -or ($manifest.schemaVersion -ne 1) -or ($manifest.sourceSha256 -ne (Get-FileSha256 $buildInputAsar)) -or (-not (Test-AsarFile -Path $sourceAsar -RequirePtBr))
+$needsBuild = (-not $manifest) -or ($manifest.schemaVersion -ne 1) -or ($manifest.builderRevision -ne 2) -or ($manifest.sourceSha256 -ne (Get-FileSha256 $buildInputAsar)) -or (-not (Test-AsarFile -Path $sourceAsar -RequirePtBr))
 if ($needsBuild) {
     $nodeCommand = Get-Command node -ErrorAction SilentlyContinue
     $builderPath = Join-Path $scriptDir "tools\build-translated-asar.cjs"
@@ -390,7 +390,7 @@ if ($needsBuild) {
         Write-Host "    Instale o Node.js 18+ e mantenha a pasta tools junto dos scripts." -ForegroundColor Yellow
         Exit 1
     }
-    Write-Host "[i] A instalação usa uma versão diferente. Gerando um pacote compatível com o app.asar atual..." -ForegroundColor Cyan
+    Write-Host "[i] Gerando/atualizando o pacote traduzido compatível com o app.asar atual..." -ForegroundColor Cyan
     & $nodeCommand.Source $builderPath $buildInputAsar $sourceAsar
     if ($LASTEXITCODE -ne 0) {
         Write-Host "[x] Esta versão tem alterações incompatíveis com o catálogo atual. Nenhum arquivo instalado foi substituído." -ForegroundColor Red
@@ -399,7 +399,7 @@ if ($needsBuild) {
     try { $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json } catch { $manifest = $null }
 }
 
-if (-not (Test-AsarFile -Path $sourceAsar -RequirePtBr) -or -not $manifest -or $manifest.schemaVersion -ne 1 -or $manifest.translatedSha256 -ne (Get-FileSha256 $sourceAsar) -or $manifest.sourceSha256 -ne (Get-FileSha256 $buildInputAsar)) {
+if (-not (Test-AsarFile -Path $sourceAsar -RequirePtBr) -or -not $manifest -or $manifest.schemaVersion -ne 1 -or $manifest.builderRevision -ne 2 -or $manifest.translatedSha256 -ne (Get-FileSha256 $sourceAsar) -or $manifest.sourceSha256 -ne (Get-FileSha256 $buildInputAsar)) {
     Write-Host "[x] O pacote gerado não passou pela conferência de versão e integridade." -ForegroundColor Red
     Exit 1
 }

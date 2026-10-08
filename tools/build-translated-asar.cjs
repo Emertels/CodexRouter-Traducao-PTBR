@@ -11,6 +11,7 @@ const inputPath = path.resolve(process.argv[2] || path.join(root, 'app.asar'));
 const outputPath = path.resolve(process.argv[3] || path.join(root, 'app-pt.asar'));
 const translationsPath = path.join(root, 'translations', 'pt-BR.json');
 const defaultBlockSize = 4 * 1024 * 1024;
+const builderRevision = 2;
 
 function fail(message) {
   throw new Error(message);
@@ -455,6 +456,7 @@ function main() {
   const manifestTempPath = `${manifestPath}.tmp`;
   const manifest = {
     schemaVersion: 1,
+    builderRevision,
     sourceSha256: crypto.createHash('sha256').update(archive.data).digest('hex'),
     translatedSha256: crypto.createHash('sha256').update(output).digest('hex'),
     bundlePath: bundleFile.path,
