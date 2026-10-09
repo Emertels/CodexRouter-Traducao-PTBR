@@ -63,6 +63,9 @@ O executável também pode precisar da alteração reversível do Electron Fuse 
 
 O cartão **Aparência**, logo abaixo do seletor de idioma, mostra o crédito **Tradução PT-BR: Emerson Teles** em azul turquesa somente quando **Português (Brasil)** está selecionado.
 
+> [!NOTE]
+> **Atualizações do aplicativo:** Sempre que o Codex Router receber uma atualização oficial, os arquivos originais da interface serão restaurados pelo próprio aplicativo. Para continuar usando em português, basta executar o `Instalar-Traducao.bat` novamente após a atualização.
+
 ## Restaurar
 
 Execute `Restaurar-Original.bat`. O script fecha os processos da instalação selecionada, valida o backup da versão traduzida e restaura seus arquivos. Se o ASAR já estiver sem as traduções PT-BR reconhecidas, informa que não é necessário restaurar, não altera arquivos e oferece as mesmas opções para abrir ou fechar.
