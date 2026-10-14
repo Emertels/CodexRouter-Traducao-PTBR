@@ -1,10 +1,11 @@
 @echo off
-title Codex Router PT-BR - Emerson Teles
-"%SystemRoot%\System32\WindowsPowerShell\v1.0\powershell.exe" -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0aplicar-traducao.ps1"
-if errorlevel 1 (
+title Instalador PT-BR - Codex Router - Emerson Teles
+powershell.exe -NoLogo -NoProfile -ExecutionPolicy Bypass -File "%~dp0aplicar-traducao.ps1"
+set "PS_EXIT=%ERRORLEVEL%"
+if not "%PS_EXIT%"=="0" (
     echo.
     echo O instalador terminou com erro. Pressione uma tecla para fechar esta janela.
     pause >nul
-    exit 1
+    exit /b %PS_EXIT%
 )
-exit 0
+exit /b %PS_EXIT%

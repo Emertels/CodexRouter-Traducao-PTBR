@@ -3,6 +3,50 @@ Versão 1.0.0
 
 Este projeto contém o catálogo PT-BR e os scripts para criar e instalar uma versão localizada do Codex Router Control Center no Windows.
 
+===== CODEX-ROUTER-STATUS =====
+Estado da atualização — 13/10/2026 · Codex Router 0.6.0
+
+• A versão confirmada é 0.6.0. O pacote atualizado soma 879 ajustes PT-BR: 139 entradas de catálogo, 708 textos diretos (incluindo 11 rótulos novos), 31 valores dinâmicos e 1 crédito visual. Em 14/10/2026, o usuário confirmou que testou a instalação no aplicativo e que ela está funcionando.
+• Instalador e restaurador validam primeiro caminhos do processo, registro e locais conhecidos; só quando nenhum candidato válido contém Codex Router.exe e `resources\app.asar` iniciam a busca profunda em unidades fixas e removíveis. A busca ignora pastas raiz do sistema e junctions, deduplica caminhos, mantém instalações distintas selecionáveis e não usa a barra sobreposta do PowerShell. Mantenha `Find-Installations.ps1` ao lado dos scripts.
+• A restauração continua vinculada ao backup e aos hashes da instalação selecionada.
+===== /CODEX-ROUTER-STATUS =====
+
+GERAR O PACOTE
+1. Feche o Codex Router.
+2. Copie o arquivo original resources\app.asar da instalação para esta pasta com o nome app.asar.
+3. Execute: npm run build
+   Ou: node tools\build-translated-asar.cjs app.asar app-pt.asar
+
+O construtor não usa dependências npm. Ele valida cabeçalhos, offsets e hashes SHA-256 do ASAR, aplica as traduções dos arquivos em translations\ e cria app-pt.asar com um manifesto de versão.
+
+INSTALAR
+1. Feche o Codex Router normalmente.
+2. Execute Instalar-Traducao.bat.
+3. O instalador reconstrói automaticamente o pacote para a versão instalada quando os textos ainda são compatíveis, fecha à força os processos dessa instalação e guarda backups por hash sem sobrescrever versões anteriores.
+
+RESTAURAR
+Execute Restaurar-Original.bat. O restaurador fecha os processos do aplicativo e restaura o backup correspondente. Se o ASAR já estiver sem as traduções PT-BR reconhecidas, não altera os arquivos.
+
+SEGURANÇA
+Não compartilhe app.asar, app-pt.asar, executáveis, backups ou dados pessoais no Git. Esses arquivos são ignorados pelo .gitignore e devem ser obtidos/gerados para a versão instalada.
+
+Tradução e manutenção: Emerson Teles
+Licença dos scripts: MIT
+
+- Codex Router: revisão de acentuação concluída; 0 textos de script precisaram de correção e 0 novas strings foram adicionadas nesta revisão.
+CODEX ROUTER CONTROL CENTER — TRADUÇÃO PT-BR
+Versão 1.0.0
+
+Este projeto contém o catálogo PT-BR e os scripts para criar e instalar uma versão localizada do Codex Router Control Center no Windows.
+
+===== CODEX-ROUTER-STATUS =====
+Estado da atualização — 13/10/2026 · Codex Router 0.6.0
+
+• A versão confirmada é 0.6.0. O pacote atualizado soma 879 ajustes PT-BR: 139 entradas de catálogo, 708 textos diretos (incluindo 11 rótulos novos), 31 valores dinâmicos e 1 crédito visual. Em 14/10/2026, o usuário confirmou que testou a instalação no aplicativo e que ela está funcionando.
+• Instalador e restaurador validam primeiro caminhos do processo, registro e locais conhecidos; só quando nenhum candidato válido contém Codex Router.exe e `resources\app.asar` iniciam a busca profunda em unidades fixas e removíveis. A busca ignora pastas raiz do sistema e junctions, deduplica caminhos, mantém instalações distintas selecionáveis e não usa a barra sobreposta do PowerShell. Mantenha `Find-Installations.ps1` ao lado dos scripts.
+• A restauração continua vinculada ao backup e aos hashes da instalação selecionada.
+===== /CODEX-ROUTER-STATUS =====
+
 GERAR O PACOTE
 1. Feche o Codex Router.
 2. Copie o arquivo original resources\app.asar da instalação para esta pasta com o nome app.asar.

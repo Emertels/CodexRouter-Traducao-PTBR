@@ -6,7 +6,7 @@ $consoleUtf8 = New-Object System.Text.UTF8Encoding($false)
 [Console]::InputEncoding = $consoleUtf8
 [Console]::OutputEncoding = $consoleUtf8
 $OutputEncoding = $consoleUtf8
-$Host.UI.RawUI.WindowTitle = "Instalador Codex Router PT-BR v1.0.0 - Emerson Teles"
+$Host.UI.RawUI.WindowTitle = "Instalador PT-BR - Codex Router - Emerson Teles"
 $launchChoiceHelper = Join-Path $PSScriptRoot "tools\launch-choice.ps1"
 if (-not (Test-Path -LiteralPath $launchChoiceHelper -PathType Leaf)) {
     throw "O helper para abrir o Codex Router não foi encontrado: $launchChoiceHelper"
@@ -17,8 +17,8 @@ function Write-Header {
     Clear-Host
     Write-Host ""
     Write-Host " ==================================================================== " -ForegroundColor Cyan
-Write-Host "       TRADUÇÃO CODEX ROUTER PARA PORTUGUÊS DO BRASIL                 " -ForegroundColor Green
-    Write-Host "            Desenvolvido e Personalizado por: Emerson Teles           " -ForegroundColor Yellow
+Write-Host "       TRADUÇÃO CODEX ROUTER PARA PORTUGUÊS DO BRASIL                 " -ForegroundColor Cyan
+    Write-Host "            Desenvolvido e Personalizado por: Emerson Teles           " -ForegroundColor Cyan
     Write-Host " ==================================================================== " -ForegroundColor Cyan
     Write-Host ""
 }
@@ -226,6 +226,7 @@ public class FastFuse {
 }
 
 function Find-CodexRouterInstallation {
+    . (Join-Path $PSScriptRoot 'Find-Installations.ps1')
     $candidates = @()
 
     $proc = Get-Process | Where-Object { $_.ProcessName -match "codex.*router" -or $_.Path -like "*@codex-routercontrol-center*" } | Select-Object -First 1
@@ -260,16 +261,38 @@ function Find-CodexRouterInstallation {
         } catch { }
     }
 
-    foreach ($cand in ($candidates | Where-Object { $_ } | Select-Object -Unique)) {
-        if ((Test-Path (Join-Path $cand "resources\app.asar")) -or (Test-Path (Join-Path $cand "Codex Router.exe"))) {
-            return $cand
-        }
+    # Primeiro valida caminhos conhecidos; só faz busca profunda quando nenhum deles serve.
+    $quickValid = @($candidates | Where-Object {
+        $candidatePath = ([string]$_).Trim().Trim('"')
+        (Test-Path -LiteralPath (Join-Path $candidatePath 'Codex Router.exe') -PathType Leaf) -and
+        (Test-Path -LiteralPath (Join-Path $candidatePath 'resources\app.asar') -PathType Leaf)
+    } | Select-Object -Unique)
+    if ($quickValid.Count -gt 0) {
+        $candidates = $quickValid
+    } else {
+        Write-Host "    Nenhum caminho conhecido validado; iniciando busca em todas as unidades..." -ForegroundColor DarkGray
+        $candidates += @(Find-ExecutableDirectoriesOnAllDrives -ExecutableName 'Codex Router.exe' -ProductLabel 'Codex Router' -ValidationRelativePath 'resources\app.asar')
     }
-
+    $candidates = @($candidates | Where-Object { $_ } | Select-Object -Unique)
+    $valid = @(); $seenPaths = @{}
+    foreach ($cand in ($candidates | Where-Object { $_ })) {
+        try {
+            $normalized = [IO.Path]::GetFullPath(([string]$cand).Trim().Trim('"'))
+            $resolved = (Resolve-Path -LiteralPath $normalized -ErrorAction Stop).Path.TrimEnd('\')
+            if (-not $seenPaths.ContainsKey($resolved) -and (Test-Path (Join-Path $resolved "resources\app.asar") -PathType Leaf) -and (Test-Path (Join-Path $resolved "Codex Router.exe") -PathType Leaf)) { $seenPaths[$resolved] = $true; $valid += $resolved }
+        } catch { }
+    }
+    if ($valid.Count -eq 1) { return $valid[0] }
+    if ($valid.Count -gt 1) {
+        Write-Host "[i] Mais de uma instalação válida do Codex Router foi encontrada:" -ForegroundColor Yellow
+        for ($i = 0; $i -lt $valid.Count; $i++) { Write-Host "    [$($i + 1)] $($valid[$i])" -ForegroundColor Cyan }
+        do { $choice = Read-Host "Digite o número da instalação que deseja usar"; $selection = 0 } while (-not [int]::TryParse($choice, [ref]$selection) -or $selection -lt 1 -or $selection -gt $valid.Count)
+        return $valid[$selection - 1]
+    }
     return $null
 }
 
-# Inicio da Execucao
+# Início da execução
 Write-Header
 
 # 1. Localizar a instalação do Codex Router
@@ -281,13 +304,14 @@ while (-not $routerDir -or -not (Test-Path $routerDir)) {
 Write-Host "[!] Não foi possível detectar a pasta do Codex Router automaticamente." -ForegroundColor Yellow
 $userInput = Read-Host "Digite ou cole o caminho da pasta onde o Codex Router está instalado"
     if ([string]::IsNullOrWhiteSpace($userInput)) {
-    Write-Host "[x] Operação cancelada pelo usuário." -ForegroundColor Red
+    Write-Host "[x] Nenhuma instalação foi selecionada. O Codex Router pode não estar instalado." -ForegroundColor Red
         Exit 1
     }
-    if (Test-Path (Join-Path $userInput "resources\app.asar")) {
+    $userInput = $userInput.Trim().Trim('"')
+    if ((Test-Path (Join-Path $userInput "resources\app.asar") -PathType Leaf) -and (Test-Path (Join-Path $userInput "Codex Router.exe") -PathType Leaf)) {
         $routerDir = $userInput
     } else {
-Write-Host "[x] Caminho inválido ou 'resources\app.asar' não encontrado nessa pasta!" -ForegroundColor Red
+Write-Host "[x] Instalação não encontrada nesse caminho. Confirme se há Codex Router.exe e resources\app.asar." -ForegroundColor Red
     }
 }
 
@@ -296,7 +320,7 @@ $resourcesDir = Join-Path $routerDir "resources"
 $targetAsar = Join-Path $resourcesDir "app.asar"
 $targetExe = Join-Path $routerDir "Codex Router.exe"
 
-# Pasta padronizada de backup dentro do diretorio do programa
+# Pasta padronizada de backup dentro do diretório do programa
 $backupDir = Join-Path $routerDir "_backup"
 $backupAsar = Join-Path $backupDir "app.asar"
 $backupExe = Join-Path $backupDir "Codex Router.exe"
@@ -326,7 +350,7 @@ if ($targetHasPtBr -and (Test-Path -LiteralPath $statePath -PathType Leaf)) {
     try {
         $savedState = Get-Content -LiteralPath $statePath -Raw | ConvertFrom-Json
         $candidate = Join-Path $routerDir $savedState.backupAsar
-        if ($manifest -and $manifest.schemaVersion -eq 1 -and $manifest.builderRevision -eq 2 -and
+        if ($manifest -and $manifest.schemaVersion -eq 1 -and $manifest.builderRevision -eq 3 -and
             $manifest.translatedSha256 -eq $targetHash -and $manifest.sourceSha256 -eq $savedState.sourceSha256 -and
             $savedState.schemaVersion -eq 1 -and $savedState.installedSha256 -eq $targetHash -and
             (Test-AsarFile -Path $candidate) -and (Get-FileSha256 $candidate) -eq $savedState.sourceSha256) {
@@ -336,7 +360,7 @@ if ($targetHasPtBr -and (Test-Path -LiteralPath $statePath -PathType Leaf)) {
         }
     } catch { $savedState = $null }
 }
-if ($manifest -and $manifest.schemaVersion -eq 1 -and $manifest.builderRevision -eq 2 -and $manifest.translatedSha256 -eq $targetHash -and $targetHasPtBr) {
+if ($manifest -and $manifest.schemaVersion -eq 1 -and $manifest.builderRevision -eq 3 -and $manifest.translatedSha256 -eq $targetHash -and $targetHasPtBr) {
     $matchingBackup = $null
     if (Test-Path -LiteralPath $statePath -PathType Leaf) {
         try {
@@ -381,7 +405,7 @@ if ($targetHasPtBr) {
     }
 }
 
-$needsBuild = (-not $manifest) -or ($manifest.schemaVersion -ne 1) -or ($manifest.builderRevision -ne 2) -or ($manifest.sourceSha256 -ne (Get-FileSha256 $buildInputAsar)) -or (-not (Test-AsarFile -Path $sourceAsar -RequirePtBr))
+$needsBuild = (-not $manifest) -or ($manifest.schemaVersion -ne 1) -or ($manifest.builderRevision -ne 3) -or ($manifest.sourceSha256 -ne (Get-FileSha256 $buildInputAsar)) -or (-not (Test-AsarFile -Path $sourceAsar -RequirePtBr))
 if ($needsBuild) {
     $nodeCommand = Get-Command node -ErrorAction SilentlyContinue
     $builderPath = Join-Path $scriptDir "tools\build-translated-asar.cjs"
@@ -399,7 +423,7 @@ if ($needsBuild) {
     try { $manifest = Get-Content -LiteralPath $manifestPath -Raw | ConvertFrom-Json } catch { $manifest = $null }
 }
 
-if (-not (Test-AsarFile -Path $sourceAsar -RequirePtBr) -or -not $manifest -or $manifest.schemaVersion -ne 1 -or $manifest.builderRevision -ne 2 -or $manifest.translatedSha256 -ne (Get-FileSha256 $sourceAsar) -or $manifest.sourceSha256 -ne (Get-FileSha256 $buildInputAsar)) {
+if (-not (Test-AsarFile -Path $sourceAsar -RequirePtBr) -or -not $manifest -or $manifest.schemaVersion -ne 1 -or $manifest.builderRevision -ne 3 -or $manifest.translatedSha256 -ne (Get-FileSha256 $sourceAsar) -or $manifest.sourceSha256 -ne (Get-FileSha256 $buildInputAsar)) {
     Write-Host "[x] O pacote gerado não passou pela conferência de versão e integridade." -ForegroundColor Red
     Exit 1
 }

@@ -11,7 +11,7 @@ const inputPath = path.resolve(process.argv[2] || path.join(root, 'app.asar'));
 const outputPath = path.resolve(process.argv[3] || path.join(root, 'app-pt.asar'));
 const translationsPath = path.join(root, 'translations', 'pt-BR.json');
 const defaultBlockSize = 4 * 1024 * 1024;
-const builderRevision = 2;
+const builderRevision = 3;
 
 function fail(message) {
   throw new Error(message);
@@ -24,7 +24,15 @@ function verifyJavaScriptSyntax(source, outputPath) {
     const result = spawnSync(process.execPath, ['--check', checkPath], { encoding: 'utf8' });
     if (result.error) fail(`Não foi possível validar a sintaxe do bundle: ${result.error.message}`);
     if (result.status !== 0) {
-      fail(`O bundle JavaScript gerado tem erro de sintaxe:\n${(result.stderr || result.stdout).trim()}`);
+      const diagnostic = (result.stderr || result.stdout).trim();
+      const location = diagnostic.match(/:(\d+)\s*$/m);
+      const line = location ? Number(location[1]) : 1;
+      const diagnosticLines = diagnostic.split(/\r?\n/);
+      const caretLine = diagnosticLines.find((item) => item.includes('^') && /^\s*\^/.test(item));
+      const column = caretLine ? caretLine.indexOf('^') : 0;
+      const sourceLine = source.split(/\r?\n/)[line - 1] || '';
+      const excerpt = sourceLine.slice(Math.max(0, column - 100), column + 100);
+      fail(`O bundle JavaScript gerado tem erro de sintaxe (linha ${line}, coluna ${column + 1}): ${excerpt}`);
     }
   } finally {
     fs.rmSync(checkPath, { force: true });
@@ -244,10 +252,14 @@ function replaceInlineLiterals(source, translations, handledSources = new Set())
     while (index >= 0) {
       const protectedRange = protectedRanges.find(range => index >= range.start && index <= range.end);
       const quote = source[index - 1];
-      const isWholeLiteral = !translation.exact || (
-        (quote === '`' || quote === '"' || quote === "'")
-        && source[index + translation.source.length] === quote
-      );
+      const endsBeforeTemplateExpression = source[index + translation.source.length] === '$'
+        && source[index + translation.source.length + 1] === '{';
+      const identifierBoundarySafe = quote !== '.'
+        && !/[A-Za-z0-9_$]/.test(source[index - 1] || '')
+        && (!/[A-Za-z0-9_$]/.test(source[index + translation.source.length] || '') || endsBeforeTemplateExpression);
+      const isWholeLiteral = translation.exact
+        ? ((quote === '`' || quote === '"' || quote === "'") && source[index + translation.source.length] === quote)
+        : identifierBoundarySafe;
       if (!protectedRange && isWholeLiteral) {
         candidates.push({ index, source: translation.source, target: translation.target });
       }
@@ -288,8 +300,14 @@ function localizeDynamicUiMessages(source) {
   const activitySummaryHelper = 'function codexRouterPtActivitySummary(e,t,n,r){let i=document.documentElement.lang||navigator.language||``;if(!/^pt(?:-|$)/i.test(i))return e?`${V(t)} measured tokens across the last year`:n?`Reading the retained router ledger`:r?`Recent event telemetry; retained daily totals are unavailable`:`Token history appears after the router reports usage`;return e?`${V(t)} tokens medidos ao longo do último ano`:n?`Lendo o histórico mantido pelo roteador`:r?`Telemetria recente de eventos; os totais diários mantidos não estão disponíveis`:`O histórico de tokens aparecerá quando o roteador informar o uso`}';
   const activityTooltipHelper = 'function codexRouterPtActivityTooltip(e,t,n,r,i){let a=document.documentElement.lang||navigator.language||``;if(!/^pt(?:-|$)/i.test(a))return e===`weekly`?`${V(t)} tokens from ${n.format(r)} to ${n.format(i)}`:e===`cumulative`?`${V(t)} cumulative tokens through ${n.format(r)}`:`${V(t)} tokens on ${n.format(r)}`;return e===`weekly`?`${V(t)} tokens de ${n.format(r)} a ${n.format(i)}`:e===`cumulative`?`${V(t)} tokens acumulados até ${n.format(r)}`:`${V(t)} tokens em ${n.format(r)}`}';
   const pluralizer = 'function codexRouterPtPlural(e,t){let n=document.documentElement.lang||navigator.language||``;if(/^pt(?:-|$)/i.test(n)){let r={request:[`solicitação`,`solicitações`],chat:[`conversa`,`conversas`],route:[`rota`,`rotas`],model:[`modelo`,`modelos`],provider:[`provedor`,`provedores`],session:[`sessão`,`sessões`]};if(r[t])return r[t][e===1?0:1]}return e===1?t:`${t}s`}';
-  if (source.split(marker).length - 1 !== 1) fail('Ponto de inserção das traduções dinâmicas mudou.');
-  source = source.replace(marker, `${helper}${usageDetailHelper}${activitySummaryHelper}${activityTooltipHelper}${pluralizer}${marker}`);
+  const helperNames = ['function codexRouterPtText(', 'function codexRouterPtUsageDetail(', 'function codexRouterPtActivitySummary(', 'function codexRouterPtActivityTooltip(', 'function codexRouterPtPlural('];
+  const helpersPresent = helperNames.filter((name) => source.includes(name)).length;
+  if (helpersPresent === 0) {
+    if (source.split(marker).length - 1 !== 1) fail('Ponto de inserção das traduções dinâmicas mudou.');
+    source = source.replace(marker, `${helper}${usageDetailHelper}${activitySummaryHelper}${activityTooltipHelper}${pluralizer}${marker}`);
+  } else if (helpersPresent !== helperNames.length) {
+    fail('O bundle contém apenas parte dos auxiliares PT-BR; não será alterado.');
+  }
 
   const replacements = [
     ['children:l?.planNote||Hi(e,t?.account?.status,t?.account?.message,r===`darwin`)', 'children:codexRouterPtText(l?.planNote||Hi(e,t?.account?.status,t?.account?.message,r===`darwin`))'],
@@ -310,7 +328,9 @@ function localizeDynamicUiMessages(source) {
     ['function hr(e,t){return e===1?t:`${t}s`}', 'function hr(e,t){return codexRouterPtPlural(e,t)}']
   ];
   for (const [before, after] of replacements) {
-    if (!source.includes(before)) fail(`Ponto de tradução dinâmica não encontrado: ${before}`);
+    if (source.includes(after)) continue;
+    const occurrences = source.split(before).length - 1;
+    if (occurrences !== 1) fail(`Ponto de tradução dinâmica não encontrado de forma única: ${before}`);
     source = source.replace(before, after);
   }
   return { source, count: 31 };

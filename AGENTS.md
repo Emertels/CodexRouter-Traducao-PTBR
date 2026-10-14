@@ -1,5 +1,12 @@
 # Diretrizes de manutenção — Codex Router PT-BR
 
+<!-- codex-router-discovery -->
+## Descoberta e restauração
+- Instalador e restaurador validam primeiro caminhos do processo, registro e locais conhecidos; só quando nenhum candidato válido contém Codex Router.exe e `resources\app.asar` iniciam a busca profunda em unidades fixas e removíveis. A busca ignora pastas raiz do sistema e junctions, valida também o arquivo-chave, deduplica caminhos, mantém instalações distintas selecionáveis e exibe o progresso no título da janela, nunca com `Write-Progress`. Mantenha `Find-Installations.ps1` ao lado dos scripts.
+- Normalize os caminhos e elimine duplicatas sem diferenciar maiúsculas/minúsculas; preserve caminhos distintos e valide o executável junto de `resources\app.asar`. Mantenha entrada manual quando nenhum candidato válido for encontrado.
+- A restauração precisa usar o backup/hash pertencente à instalação selecionada.
+<!-- /codex-router-discovery -->
+
 ## Escopo
 
 Este repositório mantém traduções e scripts para gerar e aplicar um pacote PT-BR do Codex Router Control Center no Windows. O código e o pacote original pertencem aos respectivos titulares; não afirme afiliação oficial.

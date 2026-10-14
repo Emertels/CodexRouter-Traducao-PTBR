@@ -12,7 +12,7 @@
         return 0
     }
 
-    Write-Host -NoNewline "Deseja abrir o Codex Router? [S = abrir e fechar o CMD | N, Esc ou Enter = fechar sem abrir]: " -ForegroundColor White
+    Write-Host -NoNewline "Deseja abrir o Codex Router? [S = sim | N/Enter/Esc = sair]: " -ForegroundColor White
     while ($true) {
         $key = $Host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
         if ($key.VirtualKeyCode -eq 83 -or $key.Character -eq 's' -or $key.Character -eq 'S') {

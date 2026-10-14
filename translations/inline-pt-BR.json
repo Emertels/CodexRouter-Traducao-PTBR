@@ -177,7 +177,8 @@
   },
   {
     "source": "The router operation did not finish.",
-    "target": "A operação do roteador não foi concluída."
+    "target": "A operação do roteador não foi concluída.",
+    "exact": true
   },
   {
     "source": "This deletes the model weights from this machine.",

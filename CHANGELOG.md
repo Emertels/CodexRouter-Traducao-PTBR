@@ -1,5 +1,40 @@
 # Histórico de alterações
 
+### Teste de instalação — Codex Router 0.6.0 — 14/10/2026
+- O usuário confirmou que testou a instalação PT-BR e que o aplicativo está funcionando.
+
+
+### Verificação da instalação atual — Codex Router 0.6.0 — 13/10/2026
+- A versão do aplicativo instalado é 0.6.0; o hash de `resources/app.asar` coincide com o hash traduzido do manifesto do projeto.
+- Auditoria do catálogo: 139/139 chaves cobertas; o pacote registra 708 textos diretos e 31 valores dinâmicos. A revisão dos candidatos estáticos não confirmou novas strings de interface sem tradução. Nenhuma alteração de interface foi necessária.
+
+
+### Patcher dinâmico e console — 13/10/2026
+- A revisão do construtor passou para 3. Os pontos dinâmicos já traduzidos são reconhecidos para evitar wrappers duplicados; pontos ausentes ou ambíguos causam interrupção segura.
+- Corrigido o patch de literais: traduções parciais agora respeitam limites de identificadores e não alteram nomes de métodos como `controlLocalEnvironment`. A geração do bundle 0.6.0 voltou a concluir com validação sintática aprovada.
+- Contagem consolidada da compilação: 139 entradas de catálogo, 708 textos literais, 31 traduções dinâmicas e 1 crédito visual — 879 ajustes; esta correção não acrescenta strings.
+- Scripts PowerShell, lançadores CMD e prompt final mantêm UTF-8 e o padrão comum de S / N / Enter / Esc.
+- Nenhuma string visível nova foi adicionada nesta correção.
+
+## Em desenvolvimento — Codex Router Control Center 0.6.0 (13/10/2026)
+
+### Correção da busca de instalações — 13/10/2026
+- Instalador e restaurador validam primeiro caminhos do processo, registro e locais conhecidos; só quando nenhum candidato válido contém Codex Router.exe e `resources\app.asar` iniciam a busca profunda em unidades fixas e removíveis. A busca ignora pastas raiz do sistema e junctions, deduplica caminhos, mantém instalações distintas selecionáveis e não usa a barra sobreposta do PowerShell. Mantenha `Find-Installations.ps1` ao lado dos scripts.
+- A busca mostra a unidade atual, o número de pastas verificadas e as candidatas encontradas; não segue junctions/reparse points para evitar ciclos. Por cobrir todo o volume, pode levar mais tempo em discos grandes ou externos.
+- Esta correção altera apenas a localização: 0 novas strings de interface foram adicionadas nesta etapa.
+
+### Busca em camadas sem barra sobreposta — 13/10/2026
+- O instalador e o restaurador validam primeiro caminhos obtidos do processo, registro e locais conhecidos. Só se nenhum contiver `Codex Router.exe` e `resources\app.asar` fazem busca profunda em unidades fixas/removíveis.
+- A busca profunda ignora pastas de sistema na raiz e junctions, valida o executável junto com `resources\app.asar`, deduplica caminhos e mantém instalações distintas selecionáveis. O progresso aparece no título da janela; a barra `Write-Progress` foi removida.
+- Esta melhoria altera a busca, não a interface: 0 novas strings.
+
+- Busca do instalador e do restaurador normalizada para eliminar caminhos duplicados sem ocultar instalações distintas.
+- Busca automática ampliada para localizar `Codex Router.exe` em subpastas de todas as unidades montadas, incluindo discos externos; os resultados são filtrados pelo ASAR correspondente.
+- Instalador e restaurador procuram `Codex Router.exe` recursivamente em todas as unidades montadas, além de processo, diretórios conhecidos e registro do Windows. Validam o executável e `resources\app.asar`; quando nenhum candidato válido é encontrado, aceitam caminho manual.
+- Se houver mais de uma instalação, pedem seleção. A restauração continua validando os backups e hashes guardados junto à instalação escolhida.
+- Confirmado pelo usuário que o Codex Router continua na versão 0.6.0, sem atualização recente. Auditoria do catálogo-base dessa versão: 139/139 chaves traduzidas e 697 textos literais anteriores. Foram traduzidos mais 11 rótulos estáticos (Workspaces, Router, Dashboard, Providers, output, Runtime, Installed, English, Español, Plan e Settings). Os nomes Qwen e o termo Harness foram preservados por serem nomes de modelos/termo técnico.
+- Revisada a acentuação dos scripts; não foi encontrado texto visível sem acento que precisasse de ajuste nesta rodada (0 textos alterados, 0 novas strings).
+
 ## [1.0.0] - 2026-10-07
 
 ### Lançamento Oficial da Tradução PT-BR

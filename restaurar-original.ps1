@@ -6,7 +6,7 @@ $consoleUtf8 = New-Object System.Text.UTF8Encoding($false)
 [Console]::InputEncoding = $consoleUtf8
 [Console]::OutputEncoding = $consoleUtf8
 $OutputEncoding = $consoleUtf8
-$Host.UI.RawUI.WindowTitle = "Restaurar Codex Router Original v1.0.0 - Emerson Teles"
+$Host.UI.RawUI.WindowTitle = "Restaurador PT-BR - Codex Router - Emerson Teles"
 $launchChoiceHelper = Join-Path $PSScriptRoot "tools\launch-choice.ps1"
 if (-not (Test-Path -LiteralPath $launchChoiceHelper -PathType Leaf)) {
     throw "O helper para abrir o Codex Router não foi encontrado: $launchChoiceHelper"
@@ -16,10 +16,10 @@ if (-not (Test-Path -LiteralPath $launchChoiceHelper -PathType Leaf)) {
 function Write-Header {
     Clear-Host
     Write-Host ""
-    Write-Host " ==================================================================== " -ForegroundColor Yellow
-Write-Host "          RESTAURAR CODEX ROUTER ORIGINAL DE FÁBRICA                  " -ForegroundColor White
+    Write-Host " ==================================================================== " -ForegroundColor Cyan
+Write-Host "          RESTAURAR CODEX ROUTER ORIGINAL DE FÁBRICA                  " -ForegroundColor Cyan
 Write-Host "              Pacote de Tradução por: Emerson Teles                   " -ForegroundColor Cyan
-    Write-Host " ==================================================================== " -ForegroundColor Yellow
+    Write-Host " ==================================================================== " -ForegroundColor Cyan
     Write-Host ""
 }
 
@@ -137,6 +137,7 @@ function Stop-CodexRouterProcesses([string]$ExePath) {
 }
 
 function Find-CodexRouterInstallation {
+    . (Join-Path $PSScriptRoot 'Find-Installations.ps1')
     $candidates = @()
 
     $proc = Get-Process | Where-Object { $_.ProcessName -match "codex.*router" -or $_.Path -like "*@codex-routercontrol-center*" } | Select-Object -First 1
@@ -165,12 +166,34 @@ function Find-CodexRouterInstallation {
         } catch { }
     }
 
-    foreach ($cand in ($candidates | Where-Object { $_ } | Select-Object -Unique)) {
-        if (Test-Path (Join-Path $cand "resources\app.asar")) {
-            return $cand
-        }
+    # Primeiro valida caminhos conhecidos; só faz busca profunda quando nenhum deles serve.
+    $quickValid = @($candidates | Where-Object {
+        $candidatePath = ([string]$_).Trim().Trim('"')
+        (Test-Path -LiteralPath (Join-Path $candidatePath 'Codex Router.exe') -PathType Leaf) -and
+        (Test-Path -LiteralPath (Join-Path $candidatePath 'resources\app.asar') -PathType Leaf)
+    } | Select-Object -Unique)
+    if ($quickValid.Count -gt 0) {
+        $candidates = $quickValid
+    } else {
+        Write-Host "    Nenhum caminho conhecido validado; iniciando busca em todas as unidades..." -ForegroundColor DarkGray
+        $candidates += @(Find-ExecutableDirectoriesOnAllDrives -ExecutableName 'Codex Router.exe' -ProductLabel 'Codex Router' -ValidationRelativePath 'resources\app.asar')
     }
-
+    $candidates = @($candidates | Where-Object { $_ } | Select-Object -Unique)
+    $valid = @(); $seenPaths = @{}
+    foreach ($cand in ($candidates | Where-Object { $_ })) {
+        try {
+            $normalized = [IO.Path]::GetFullPath(([string]$cand).Trim().Trim('"'))
+            $resolved = (Resolve-Path -LiteralPath $normalized -ErrorAction Stop).Path.TrimEnd('\')
+            if (-not $seenPaths.ContainsKey($resolved) -and (Test-Path (Join-Path $resolved "resources\app.asar") -PathType Leaf) -and (Test-Path (Join-Path $resolved "Codex Router.exe") -PathType Leaf)) { $seenPaths[$resolved] = $true; $valid += $resolved }
+        } catch { }
+    }
+    if ($valid.Count -eq 1) { return $valid[0] }
+    if ($valid.Count -gt 1) {
+        Write-Host "[i] Mais de uma instalação válida do Codex Router foi encontrada:" -ForegroundColor Yellow
+        for ($i = 0; $i -lt $valid.Count; $i++) { Write-Host "    [$($i + 1)] $($valid[$i])" -ForegroundColor Cyan }
+        do { $choice = Read-Host "Digite o número da instalação que deseja restaurar"; $selection = 0 } while (-not [int]::TryParse($choice, [ref]$selection) -or $selection -lt 1 -or $selection -gt $valid.Count)
+        return $valid[$selection - 1]
+    }
     return $null
 }
 
@@ -183,10 +206,12 @@ $routerDir = Find-CodexRouterInstallation
 while (-not $routerDir -or -not (Test-Path (Join-Path $routerDir "resources\app.asar"))) {
     $userInput = Read-Host "Cole o caminho da pasta de instalação do Codex Router ou pressione Enter para cancelar"
     if ([string]::IsNullOrWhiteSpace($userInput)) {
-        Write-Host "[x] Operação cancelada; nenhum arquivo foi alterado." -ForegroundColor Yellow
+        Write-Host "[x] Nenhuma instalação foi selecionada. O Codex Router pode não estar instalado; nenhum arquivo foi alterado." -ForegroundColor Yellow
         Exit 1
     }
-    if (Test-Path (Join-Path $userInput "resources\app.asar")) { $routerDir = $userInput }
+    $userInput = $userInput.Trim().Trim('"')
+    if ((Test-Path (Join-Path $userInput "resources\app.asar") -PathType Leaf) -and (Test-Path (Join-Path $userInput "Codex Router.exe") -PathType Leaf)) { $routerDir = $userInput }
+    else { Write-Host "[x] Instalação não encontrada nesse caminho. Confirme se há Codex Router.exe e resources\app.asar." -ForegroundColor Red }
 }
 
 Write-Host "    -> Localizado em: $routerDir" -ForegroundColor Green
